@@ -1,12 +1,21 @@
 from langchain_community.document_loaders import TextLoader
-from langchain_openai import ChatOpenAI
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-model = ChatOpenAI()
+hf_token = os.getenv("HUGGINGFACE_ACCESS_TOKEN")
+
+llm = HuggingFaceEndpoint(
+    repo_id= "meta-llama/Meta-Llama-3-8B-Instruct",
+    huggingfacehub_api_token= hf_token,
+    task = "text-generation"
+)
+
+model = ChatHuggingFace(llm=llm)
 
 prompt = PromptTemplate(
     template='Write a summary for the following poem - \n {poem}',
